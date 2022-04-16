@@ -8,8 +8,12 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,15 +29,28 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.pedro.library.AutoPermissions;
-import com.pedro.library.AutoPermissionsListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Map;
 
 
-public class ParentsActivity extends AppCompatActivity implements AutoPermissionsListener {
+public class ParentsActivity extends AppCompatActivity {
     SupportMapFragment mapFragment;
     GoogleMap map;
 
     MarkerOptions myLocationMarker;
+
+    NavigationView navigationView;
+
+    private String dbName, dbPhoneNumber, dbBirthDay, dbAddress, dbEmail;
+    private boolean flag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +105,47 @@ public class ParentsActivity extends AppCompatActivity implements AutoPermission
                 startLocationService();
             }
         });
-        AutoPermissions.Companion.loadAllPermissions(this, 101);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("users").document(user.getUid());
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        if (document.exists()) {
+                            flag = false;
+                            // 개인정보가 있다면 정보 출력
+                            Map<String, Object> hm = document.getData();
+                            dbName = hm.get("name").toString();
+                            dbPhoneNumber = hm.get("phoneNumber").toString();
+                            dbBirthDay = hm.get("birthDay").toString();
+                            dbAddress = hm.get("address").toString();
+
+                            if (hm.get("email") != null) {
+                                dbEmail = hm.get("email").toString();
+                            }
+
+                        }
+                    }
+                }
+            }
+        });
+        navigationView = findViewById(R.id.navigationView);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.child1 :
+                        Toast.makeText(getApplicationContext(),"asdf",Toast.LENGTH_SHORT).show();
+                    case R.id.child2 :
+                        Toast.makeText(getApplicationContext(),"asdf",Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
     }
 
 
@@ -235,21 +292,21 @@ public class ParentsActivity extends AppCompatActivity implements AutoPermission
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        AutoPermissions.Companion.parsePermissions(this, requestCode, permissions, this);
-    }
-
-    @Override
-    public void onDenied(int i, String[] permissions) {
-        Toast.makeText(this, "permissions denied : " + permissions.length, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onGranted(int i, String[] permissions) {
-        Toast.makeText(this, "permissions denied : " + permissions.length, Toast.LENGTH_SHORT).show();
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        AutoPermissions.Companion.parsePermissions(this, requestCode, permissions, this);
+//    }
+//
+//    @Override
+//    public void onDenied(int i, String[] permissions) {
+//        Toast.makeText(this, "permissions denied : " + permissions.length, Toast.LENGTH_SHORT).show();
+//    }
+//
+//    @Override
+//    public void onGranted(int i, String[] permissions) {
+//        Toast.makeText(this, "permissions denied : " + permissions.length, Toast.LENGTH_SHORT).show();
+//    }
 
 }
 

@@ -24,25 +24,25 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.pedro.library.AutoPermissions;
-import com.pedro.library.AutoPermissionsListener;
 
 
-public class ChildActivity extends AppCompatActivity implements AutoPermissionsListener{
+public class ChildActivity extends AppCompatActivity {
     SupportMapFragment mapFragment;
     GoogleMap map;
     MarkerOptions houseMarker;
 
+    String abc = "tel:010-8671-7273";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child);
 
-        final DrawerLayout drawerLayout = findViewById(R.id.LinearLayout);
+        final DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
 
         findViewById(R.id.ChildImageMenu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
@@ -68,7 +68,7 @@ public class ChildActivity extends AppCompatActivity implements AutoPermissionsL
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_CALL);
-                intent.setData(Uri.parse("tel:010-9328-9578"));
+                intent.setData(Uri.parse(abc));
 
                 try {
                     startActivity(intent);
@@ -85,7 +85,7 @@ public class ChildActivity extends AppCompatActivity implements AutoPermissionsL
                 houseLocation();
             }
         });
-        AutoPermissions.Companion.loadAllPermissions(this, 101);
+      //  AutoPermissions.Companion.loadAllPermissions(this, 101);
     }
 
     private void houseLocation() {
@@ -148,21 +148,21 @@ public class ChildActivity extends AppCompatActivity implements AutoPermissionsL
     }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        AutoPermissions.Companion.parsePermissions(this, requestCode, permissions, this);
-    }
-
-    @Override
-    public void onDenied(int i, String[] strings) {
-
-    }
-
-    @Override
-    public void onGranted(int i, String[] strings) {
-
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        AutoPermissions.Companion.parsePermissions(this, requestCode, permissions, this);
+//    }
+//
+//    @Override
+//    public void onDenied(int i, String[] strings) {
+//
+//    }
+//
+//    @Override
+//    public void onGranted(int i, String[] strings) {
+//
+//    }
 
 }
 
