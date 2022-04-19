@@ -3,12 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/jnlee/AndroidStudioProjects/FindProject/app/src/main/res/layout/activity_child.xml" value="0.1" />
+        <entry key="..\:/Users/jnlee/AndroidStudioProjects/FindProject/app/src/main/res/layout/activity_camera.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/jnlee/AndroidStudioProjects/FindProject/app/src/main/res/layout/activity_chat.xml" value="0.264" />
+        <entry key="..\:/Users/jnlee/AndroidStudioProjects/FindProject/app/src/main/res/layout/activity_child.xml" value="0.264" />
         <entry key="..\:/Users/jnlee/AndroidStudioProjects/FindProject/app/src/main/res/layout/activity_login.xml" value="0.1" />
         <entry key="..\:/Users/jnlee/AndroidStudioProjects/FindProject/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Users/jnlee/AndroidStudioProjects/FindProject/app/src/main/res/layout/activity_parents.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/jnlee/AndroidStudioProjects/FindProject/app/src/main/res/layout/activity_test.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/jnlee/AndroidStudioProjects/FindProject/app/src/main/res/layout/activity_test2.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/jnlee/AndroidStudioProjects/FindProject/app/src/main/res/layout/row_chat.xml" value="0.2351851851851852" />
         <entry key="..\:/Users/jnlee/AndroidStudioProjects/FindProject/app/src/main/res/menu/child_menu.xml" value="0.17314814814814813" />
         <entry key="..\:/Users/jnlee/AndroidStudioProjects/FindProject/app/src/main/res/menu/menu.xml" value="0.264" />
         <entry key="..\:/Users/jnlee/AndroidStudioProjects/FindProject/app/src/main/res/menu/parents_menu.xml" value="0.25364583333333335" />

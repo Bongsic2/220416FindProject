@@ -1,18 +1,23 @@
 package org.techtown.findproject;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -30,15 +35,16 @@ public class ChildActivity extends AppCompatActivity {
     SupportMapFragment mapFragment;
     GoogleMap map;
     MarkerOptions houseMarker;
-
     String abc = "tel:010-8671-7273";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child);
 
-        final DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
 
+        final DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         findViewById(R.id.ChildImageMenu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,7 +91,7 @@ public class ChildActivity extends AppCompatActivity {
                 houseLocation();
             }
         });
-      //  AutoPermissions.Companion.loadAllPermissions(this, 101);
+        //  AutoPermissions.Companion.loadAllPermissions(this, 101);
     }
 
     private void houseLocation() {
@@ -147,22 +153,6 @@ public class ChildActivity extends AppCompatActivity {
         }
     }
 
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        AutoPermissions.Companion.parsePermissions(this, requestCode, permissions, this);
-//    }
-//
-//    @Override
-//    public void onDenied(int i, String[] strings) {
-//
-//    }
-//
-//    @Override
-//    public void onGranted(int i, String[] strings) {
-//
-//    }
 
 }
 

@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
     Button cButton;
     Button pButton;
+    Button caButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if(user == null){
+        if (user == null) {
             myStartActivity(LoginActivity.class);
-        }else{
+        } else {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference docRef = db.collection("users").document(user.getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
-                        if(document != null){
+                        if (document != null) {
                             if (document.exists()) {
                                 // 개인정보가 있다면 로그인 유지
                                 Log.d(TAG, "DocumentSnapshot data: " + document.getData());
@@ -75,6 +77,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        caButton = findViewById(R.id.caButton);
+        caButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCamera(ChatActivity.class);
+            }
+        });
+
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -90,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void myStartActivity(Class c){
-        Intent intent = new Intent(this,c);
+    private void myStartActivity(Class c) {
+        Intent intent = new Intent(this, c);
         startActivity(intent);
     }
 
@@ -102,6 +112,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showChild(Class c) {
+        Intent intent = new Intent(this, c);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    private void showCamera(Class c) {
         Intent intent = new Intent(this, c);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

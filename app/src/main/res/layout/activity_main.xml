@@ -32,6 +32,11 @@
         android:text="부모창" />
 
 
+    <Button
+        android:id="@+id/caButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="카메라" />
 
 
 </LinearLayout>

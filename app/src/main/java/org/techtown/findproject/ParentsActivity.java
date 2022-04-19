@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -34,9 +35,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Map;
 
@@ -44,28 +53,89 @@ import java.util.Map;
 public class ParentsActivity extends AppCompatActivity {
     SupportMapFragment mapFragment;
     GoogleMap map;
-
+    private String TAG = "abc";
     MarkerOptions myLocationMarker;
 
     NavigationView navigationView;
-
     private String dbName, dbPhoneNumber, dbBirthDay, dbAddress, dbEmail;
     private boolean flag = true;
+
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parents);
 
-        final DrawerLayout drawerLayout = findViewById(R.id.LinearLayout);
 
+        //-------------------------------------------------------------------------------
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
+        databaseReference.child("경도").addChildEventListener(new ChildEventListener() {  // message는 child의 이벤트를 수신합니다.
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                TestData chatData = dataSnapshot.getValue(TestData.class);  // chatData를 가져오고
+                Log.d(TAG, "경도=" + chatData.getLatitude());
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        // ----------------------------------------------------------------------
+        databaseReference.child("위도").addChildEventListener(new ChildEventListener() {  // message는 child의 이벤트를 수신합니다.
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                TestData chatData = dataSnapshot.getValue(TestData.class);  // chatData를 가져오고
+                Log.d(TAG, "위도=" + chatData.getLongitude());
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        // ----------------------------------------------------------------------
+        final DrawerLayout drawerLayout = findViewById(R.id.LinearLayout);
         findViewById(R.id.ParentsImageMenu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
-
+// ----------------------------------------------------------------------
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -81,7 +151,7 @@ public class ParentsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // 전화 코드
+        // ----------------------------------------전화 코드
         Button callbutton = findViewById(R.id.callbutton);
         callbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,7 +166,7 @@ public class ParentsActivity extends AppCompatActivity {
                 }
             }
         });
-        // 위치불러오는 코드
+        // --------------------------------------위치불러오는 코드
         Button requestbutton = findViewById(R.id.requestbutton);
         requestbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,50 +175,26 @@ public class ParentsActivity extends AppCompatActivity {
                 startLocationService();
             }
         });
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("users").document(user.getUid());
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        //DocumentReference docRef = db.collection("users").document(user.getUid()).collection("test");
+//        CollectionReference collectionReference = db.collection("users").document(user.getUid()).collection("test");
+//
+//        collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    for (QueryDocumentSnapshot coll : task.getResult()) {
+//                        coll.getId();
+//                    }
+//                }
+//            }
+//        });
 
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null) {
-                        if (document.exists()) {
-                            flag = false;
-                            // 개인정보가 있다면 정보 출력
-                            Map<String, Object> hm = document.getData();
-                            dbName = hm.get("name").toString();
-                            dbPhoneNumber = hm.get("phoneNumber").toString();
-                            dbBirthDay = hm.get("birthDay").toString();
-                            dbAddress = hm.get("address").toString();
-
-                            if (hm.get("email") != null) {
-                                dbEmail = hm.get("email").toString();
-                            }
-
-                        }
-                    }
-                }
-            }
-        });
-        navigationView = findViewById(R.id.navigationView);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.child1 :
-                        Toast.makeText(getApplicationContext(),"asdf",Toast.LENGTH_SHORT).show();
-                    case R.id.child2 :
-                        Toast.makeText(getApplicationContext(),"asdf",Toast.LENGTH_SHORT).show();
-                }
-                return false;
-            }
-        });
     }
 
-
+    // ----------------------------------------------------------------------
     public void startLocationService() {
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -177,38 +223,13 @@ public class ParentsActivity extends AppCompatActivity {
                         }
                     }
             );
-//            Location lastLocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//            if (lastLocation != null) {
-//                showCurrentLocation(lastLocation);
-//            }
-//            manager.requestLocationUpdates(
-//                    LocationManager.NETWORK_PROVIDER,
-//                    minTime,
-//                    minDistance,
-//                    new LocationListener() {
-//                        @Override
-//                        public void onLocationChanged(@NonNull Location location) {
-//                            showCurrentLocation(location);
-//
-//                            addPictures(location);
-//                        }
-//
-//                        @Override
-//                        public void onProviderDisabled(@NonNull String provider) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onProviderEnabled(@NonNull String provider) {
-//
-//                        }
-//                    });
 
         } catch (SecurityException e) {
             e.printStackTrace();
         }
     }
 
+    // ----------------------------------------------------------------------
     private void showCurrentLocation(Location location) {
         LatLng curPoint = new LatLng(location.getLatitude(), location.getLongitude());
 
@@ -222,6 +243,7 @@ public class ParentsActivity extends AppCompatActivity {
         }
     }
 
+    // ----------------------------------------------------------------------
     private void showMyLocationMarker(Location location) {
         if (myLocationMarker == null) {
             myLocationMarker = new MarkerOptions();
@@ -235,36 +257,6 @@ public class ParentsActivity extends AppCompatActivity {
         }
     }
 
-//    private void addPictures(Location location) {
-//        int pictureResId = R.drawable.friend03;
-//        String msg = "김성수\n" + "010-8671-7273";
-//
-//        if (child1 == null) {
-//            child1 = new MarkerOptions();
-//            child1.position(new LatLng(location.getLatitude() + 3000, location.getLongitude() + 3000));
-//            child1.title(" 아이1\n");
-//            child1.snippet(msg);
-//            child1.icon(BitmapDescriptorFactory.fromResource(pictureResId));
-//            //child1.icon(BitmapDescriptorFactory.fromResource(R.drawable.friend03));
-//            map.addMarker(child1);
-//        } else {
-//            child1.position(new LatLng(location.getLatitude() + 3000, location.getLongitude() + 3000));
-//        }
-//        pictureResId = R.drawable.friend04;
-//        msg = "김상수\n" + "010-7286-8885";
-//
-//        if (child2 == null) {
-//            child2 = new MarkerOptions();
-//            child2.position(new LatLng(location.getLatitude() + 2000, location.getLongitude() - 1000));
-//            child2.title(" 아이2\n");
-//            child2.snippet(msg);
-//            child2.icon(BitmapDescriptorFactory.fromResource(pictureResId));
-//            //child2.icon(BitmapDescriptorFactory.fromResource(R.drawable.friend04));
-//            map.addMarker(child2);
-//        } else {
-//            child2.position(new LatLng(location.getLatitude() + 2000, location.getLongitude() - 1000));
-//        }
-//    }
 
     @Override
     protected void onPause() {
